@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BYU Rock Paper Scissors</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #e9f0fb;
+      color: #002E5D;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #002E5D;
+      font-size: 2.5rem;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #0055A4;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #003f7f;
+    }
+
+    .result, .score {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+
+    .history {
+      margin-top: 30px;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Rock, Paper, Scissors!</h1>
+  <p>First to 5 wins. Enter your name to get started:</p>
+
+  <input type="text" id="username" placeholder="Enter your name" />
+  <div>
+    <button onclick="play('rock')">🪨 Rock</button>
+    <button onclick="play('paper')">📄 Paper</button>
+    <button onclick="play('scissors')">✂️ Scissors</button>
+  </div>
+
+  <div class="result" id="resultText"></div>
+  <div class="score" id="scoreText">You: 0 | CPU: 0</div>
+
+  <div class="history">
+    <h3>Game History</h3>
+    <ul id="historyLog"></ul>
+  </div>
+
+  <script>
+    let userScore = 0;
+    let cpuScore = 0;
+    let history = [];
+
+    function play(userChoice) {
+      const name = document.getElementById('username').value || "You";
+      const choices = ['rock', 'paper', 'scissors'];
+      const cpuChoice = choices[Math.floor(Math.random() * 3)];
+
+      let outcome = '';
+      if (userChoice === cpuChoice) {
+        outcome = "It's a tie!";
+      } else if (
+        (userChoice === 'rock' && cpuChoice === 'scissors') ||
+        (userChoice === 'paper' && cpuChoice === 'rock') ||
+        (userChoice === 'scissors' && cpuChoice === 'paper')
+      ) {
+        userScore++;
+        outcome = `${name} smacked the CPU with ${userChoice} 🏆`;
+      } else {
+        cpuScore++;
+        outcome = `CPU clapped ${name} using ${cpuChoice} 😬`;
+      }
+
+      // Show result
+      document.getElementById('resultText').innerText = outcome;
+      document.getElementById('scoreText').innerText = `${name}: ${userScore} | CPU: ${cpuScore}`;
+
+      // Add to history
+      const log = document.getElementById('historyLog');
+      const entry = document.createElement('li');
+      entry.textContent = `${name} chose ${userChoice}, CPU chose ${cpuChoice} → ${outcome}`;
+      log.prepend(entry);
+
+      // Reset if someone hits 5
+      if (userScore === 5 || cpuScore === 5) {
+        setTimeout(() => {
+          alert(userScore === 5 ? `${name} wins the match! 🎉` : `CPU takes the dub! 😤`);
+          userScore = 0;
+          cpuScore = 0;
+          document.getElementById('scoreText').innerText = `${name}: 0 | CPU: 0`;
+          document.getElementById('resultText').innerText = '';
+          log.innerHTML = '';
+        }, 300);
+      }
+    }
+  </script>
+</body>
+</html>
+
